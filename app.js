@@ -9,6 +9,7 @@
 // This code was built upon node.js starter application for Bluemix.
 // 
 //------------------------------------------------------------------------------
+'use strict';
 
 // This application uses express as it's web server
 // for more info, see: http://expressjs.com
@@ -31,11 +32,12 @@ var appEnv = cfenv.getAppEnv();
 // Serves the API functionality from the server root
 // =================================================
 app.get('/', function(req, res){
-	data = {}; // Return data will be in JSON format and stored here.
+	var data = {}; // Return data will be in JSON format and stored here.
 
 	// Usage: API calls must include a query parameter, 'q'
 	if (req.query.q === undefined){
 		data['error'] = 'Parameters missing.';
+		res.send(data);
 	} else {
 		// Invokes Watson's personality insights
 		var watson = require('watson-developer-cloud');
@@ -44,21 +46,18 @@ app.get('/', function(req, res){
 		  password: 'LFB7Hdjw5jmF',
 		  version: 'v2'
 		});
-		console.log('I am here');
 		personality_insights.profile({ text: req.query.q },
 		  function (err, response) {
 		    if (err) {
-		  		data['error'] = err;
-		  		console.log(err);
+		    	data['error'] = err;
 		    } else {
-		        data['response'] = JSON.stringify(response, null, 2);
+		        data['response'] = response;
 		        data['input'] = req.query.q;
 	        }
+	        // Finally, return the results of our hard work.
+	        res.send(data);
 		});
 	}
-	
-	// Finally, return the results of our hard work.
-	res.send(data);
 });
 
 // start server on the specified port and binding host
