@@ -1,0 +1,10 @@
+applications:
+- services:
+  - Personality Insights-v0
+  disk_quota: 1024M
+  host: blablabrainsights
+  name: blablabrainsights
+  path: .
+  domain: mybluemix.net
+  instances: 1
+  memory: 256M
