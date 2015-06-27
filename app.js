@@ -34,7 +34,7 @@ var appEnv = cfenv.getAppEnv();
 app.get('/', function(req, res){
 	var data = {}; // Return data will be in JSON format and stored here.
 	res.set('Content-Type', 'text/plain');
-	res.set('Access-Control-Allow-Origin', 'blablabra.net, localhost');
+	res.set('Access-Control-Allow-Origin', '*');
 
 	// Usage: API calls must include a query parameter, 'q'
 	if (req.query.q === undefined){
