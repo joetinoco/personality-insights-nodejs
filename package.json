@@ -8,7 +8,7 @@
 	"dependencies": {
 		"express": "4.12.x",
 		"cfenv": "1.0.x",
-		"watson-developer-cloud": "0.9.13"
+		"watson-developer-cloud": "0.9.x"
 	},
 	"repository": {}
 }
