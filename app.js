@@ -66,6 +66,8 @@ app.get('/', function(req, res){
 			        data['input'] = req.query.q;
 		        }
 		        // Finally, return the results of our hard work.
+		        res.set('Content-Type', 'text/plain');
+		        res.set('Access-Control-Allow-Origin', '*');
 		        res.send(data);
 			});
 		}
