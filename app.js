@@ -48,8 +48,9 @@ app.use(function(req, res, next) {
 // Serves the API functionality from the server root
 // =================================================
 app.post('/', function(req, res){
-	var data = {}; // Return data will be in JSON format and stored here.
 	res.set('Content-Type', 'text/plain');
+	res.set("Access-Control-Allow-Origin", "*");
+	var data = {}; // Return data will be in JSON format and stored here.
 
 	// Usage: API calls must include a JSON object with a "query" attribute
 	if (req.body.query === undefined){
