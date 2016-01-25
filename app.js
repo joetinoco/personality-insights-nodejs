@@ -5,9 +5,9 @@
 //
 // Provides a "personality analysis" for text extracted from a region's tweets.
 // Uses IBM Watson's "Personality Insights" API.
-// 
+//
 // This code was built upon node.js starter application for Bluemix.
-// 
+//
 //------------------------------------------------------------------------------
 'use strict';
 
@@ -28,6 +28,12 @@ var app = express();
 // get the app environment from Cloud Foundry
 var appEnv = cfenv.getAppEnv();
 
+// get Watson credentials
+var fileSystem = require('fs');
+var watsonAuthInfo = JSON.parse(fileSystem.readFileSync('./watsoncredentials.json', 'utf8'));
+var watson = require('watson-developer-cloud');
+var personality_insights = watson.personality_insights(watsonAuthInfo.credentials);
+
 // =================================================
 // Serves the API functionality from the server root
 // =================================================
@@ -43,20 +49,13 @@ app.get('/', function(req, res){
 	} else {
 		if (req.query.q === 'TESTMODE'){
 			// This 'test mode' returns sample data for front-end development, saving API calls.
-			var fs = require('fs');
-			fs.readFile('./testdata.json', function (ferr, fdata) {
+			fileSystem.readFile('./testdata.json', function (ferr, fdata) {
 			  if (ferr) throw ferr;
 			  res.send(fdata);
 			});
 
 		} else {
 			// Invokes Watson's personality insights
-			var watson = require('watson-developer-cloud');
-			var personality_insights = watson.personality_insights({
-			  username: '6dd0d668-3d95-42ac-89c6-df0e12409098',
-			  password: 'LFB7Hdjw5jmF',
-			  version: 'v2'
-			});
 			personality_insights.profile({ text: req.query.q },
 			  function (err, response) {
 			    if (err) {
