@@ -15,27 +15,15 @@
 // for more info, see: http://expressjs.com
 var express = require('express');
 
+var cors = require('cors');
+
 // cfenv provides access to IBM's Cloud Foundry environment
 // for more info, see: https://www.npmjs.com/package/cfenv
 var cfenv = require('cfenv');
 
 // create a new express server
 var app = express();
-
-var allowCrossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-
-    // intercept OPTIONS method
-    if ('OPTIONS' == req.method) {
-      res.sendStatus(200);
-    }
-    else {
-      next();
-    }
-};
-app.use(allowCrossDomain);
+app.use(cors());
 
 // get the app environment from Cloud Foundry
 var appEnv = cfenv.getAppEnv();
@@ -50,20 +38,11 @@ var personality_insights = watson.personality_insights(watsonAuthInfo.credential
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-// app.use(function(req, res, next) {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-// 	res.setHeader('Access-Control-Allow-Methods', 'POST');
-//   res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
-
 // =================================================
 // Serves the API functionality from the server root
 // =================================================
 app.post('/', function(req, res){
 	res.set('Content-Type', 'text/plain');
-	res.set("Access-Control-Allow-Origin", "*");
-	res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
 	var data = {}; // Return data will be in JSON format and stored here.
 
 	// Usage: API calls must include a JSON object with a "query" attribute
