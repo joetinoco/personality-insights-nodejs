@@ -62,6 +62,8 @@ app.use(bodyParser.json());
 // =================================================
 app.post('/', function(req, res){
 	res.set('Content-Type', 'text/plain');
+	res.set("Access-Control-Allow-Origin", "*");
+	res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
 	var data = {}; // Return data will be in JSON format and stored here.
 
 	// Usage: API calls must include a JSON object with a "query" attribute
