@@ -1,14 +1,15 @@
 {
-	"name": "NodejsStarterApp",
-	"version": "0.0.1",
-	"description": "A sample nodejs app for Bluemix",
+	"name": "BlueMixBlablabraInsightsApp",
+	"version": "0.1.0",
+	"description": "A nodejs app for Blablabra's Personality Insights (powered by IBM BlueMix)",
 	"scripts": {
 		"start": "node app.js"
 	},
 	"dependencies": {
 		"express": "4.12.x",
 		"cfenv": "1.0.x",
-		"watson-developer-cloud": "0.9.x"
+		"watson-developer-cloud": "0.9.x",
+		"body-parser": "1.14.2"
 	},
 	"repository": {}
 }

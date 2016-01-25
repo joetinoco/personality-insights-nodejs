@@ -34,20 +34,29 @@ var watsonAuthInfo = JSON.parse(fileSystem.readFileSync('./watsoncredentials.jso
 var watson = require('watson-developer-cloud');
 var personality_insights = watson.personality_insights(watsonAuthInfo.credentials);
 
+// Prepare to parse submitted info
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 // =================================================
 // Serves the API functionality from the server root
 // =================================================
-app.get('/', function(req, res){
+app.post('/', function(req, res){
 	var data = {}; // Return data will be in JSON format and stored here.
 	res.set('Content-Type', 'text/plain');
-	res.set('Access-Control-Allow-Origin', '*');
 
-	// Usage: API calls must include a query parameter, 'q'
-	if (req.query.q === undefined){
+	// Usage: API calls must include a JSON object with a "query" attribute
+	if (req.body.query === undefined){
 		data['error'] = 'Parameters missing.';
 		res.send(data);
 	} else {
-		if (req.query.q === 'TESTMODE'){
+		if (req.body.query === 'TESTMODE'){
 			// This 'test mode' returns sample data for front-end development, saving API calls.
 			fileSystem.readFile('./testdata.json', function (ferr, fdata) {
 			  if (ferr) throw ferr;
@@ -56,17 +65,15 @@ app.get('/', function(req, res){
 
 		} else {
 			// Invokes Watson's personality insights
-			personality_insights.profile({ text: req.query.q },
+			personality_insights.profile({ text: req.body.query },
 			  function (err, response) {
 			    if (err) {
 			    	data['error'] = err;
 			    } else {
 			        data['response'] = response;
-			        data['input'] = req.query.q;
+			        data['input'] = req.body.query;
 		        }
 		        // Finally, return the results of our hard work.
-		        res.set('Content-Type', 'text/plain');
-		        res.set('Access-Control-Allow-Origin', '*');
 		        res.send(data);
 			});
 		}
