@@ -39,8 +39,9 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+	res.setHeader('Access-Control-Allow-Methods', 'POST');
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
@@ -49,7 +50,6 @@ app.use(function(req, res, next) {
 // =================================================
 app.post('/', function(req, res){
 	res.set('Content-Type', 'text/plain');
-	res.set("Access-Control-Allow-Origin", "*");
 	var data = {}; // Return data will be in JSON format and stored here.
 
 	// Usage: API calls must include a JSON object with a "query" attribute
