@@ -43,7 +43,9 @@ app.post('/', cors(), function(req, res, next){
 	var query = req.body.query;
 	var data = {}; // Return data will be in JSON format and stored here.
 
-	if (query === undefined){
+	if (req.method == 'OPTIONS'){
+		res.sendStatus(200);
+	} else if (query === undefined){
 		// Usage: API calls must include a JSON object with a "query" attribute
 		data['error'] = 'Parameters missing.';
 		res.send(data);
