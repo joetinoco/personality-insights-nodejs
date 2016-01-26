@@ -21,8 +21,8 @@ var cfenv = require('cfenv');
 
 // create a new express server
 var app = express();
-app.options('*', cors());
 app.use(bodyParser.json()); // Prepare to parse POST data
+app.options('/', cors());
 app.use(cors());
 
 // get the app environment from Cloud Foundry
@@ -37,12 +37,10 @@ var personality_insights = watson.personality_insights(watsonAuthInfo.credential
 // =================================================
 // Serves the API functionality from the server root
 // =================================================
-app.post('/', cors(), function(req, res){
+app.post('/', cors(), function(req, res, next){
 	res.set('Content-Type', 'text/plain');
 	res.set('Access-Control-Allow-Origin', '*');
-
 	var query = req.body.query;
-
 	var data = {}; // Return data will be in JSON format and stored here.
 
 	if (query === undefined){
