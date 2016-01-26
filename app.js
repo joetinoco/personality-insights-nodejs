@@ -12,16 +12,17 @@
 'use strict';
 
 var express = require('express');
-var cors = require('cors'); // For cross-site access
+var cors = require('cors');
+var bodyParser = require('body-parser');
 
 // cfenv provides access to IBM's Cloud Foundry environment
 // for more info, see: https://www.npmjs.com/package/cfenv
 var cfenv = require('cfenv');
 
-// create a new express server and set up CORS parameters
+// create a new express server
 var app = express();
 app.options('*', cors());
-app.options('/', cors());
+app.use(bodyParser.json()); // Prepare to parse POST data
 app.use(cors());
 
 // get the app environment from Cloud Foundry
@@ -33,30 +34,23 @@ var watsonAuthInfo = JSON.parse(fileSystem.readFileSync('./watsoncredentials.jso
 var watson = require('watson-developer-cloud');
 var personality_insights = watson.personality_insights(watsonAuthInfo.credentials);
 
-// Prepare to parse POST data
-var bodyParser = require('body-parser');
-app.use(bodyParser.json());
-
 // =================================================
 // Serves the API functionality from the server root
 // =================================================
-app.post('/', function(req, res){
+app.post('/', cors(), function(req, res){
 	res.set('Content-Type', 'text/plain');
 	res.set('Access-Control-Allow-Origin', '*');
 
+	var query = req.body.query;
+
 	var data = {}; // Return data will be in JSON format and stored here.
 
-	// Intercept OPTIONS request
-	if (req.method == 'OPTIONS') {
-      res.sendStatus(200);
-	}
-
-	if (req.body.query === undefined){
+	if (query === undefined){
 		// Usage: API calls must include a JSON object with a "query" attribute
 		data['error'] = 'Parameters missing.';
 		res.send(data);
   } else {
-		if (req.body.query === 'TESTMODE'){
+		if (query === 'TESTMODE'){
 			// This 'test mode' returns sample data for front-end development, saving API calls.
 			fileSystem.readFile('./testdata.json', function (ferr, fdata) {
 			  if (ferr) throw ferr;
@@ -65,13 +59,13 @@ app.post('/', function(req, res){
 
 		} else {
 			// Invokes Watson's personality insights
-			personality_insights.profile({ text: req.body.query },
+			personality_insights.profile({ text: query },
 			  function (err, response) {
 			    if (err) {
 			    	data['error'] = err;
 			    } else {
 			        data['response'] = response;
-			        data['input'] = req.body.query;
+			        data['input'] = query;
 		        }
 		        // Finally, return the results of our hard work.
 		        res.send(data);
