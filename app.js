@@ -43,13 +43,19 @@ app.use(bodyParser.json());
 app.post('/', function(req, res){
 	res.set('Content-Type', 'text/plain');
 	res.set('Access-Control-Allow-Origin', '*');
+
 	var data = {}; // Return data will be in JSON format and stored here.
 
-	// Usage: API calls must include a JSON object with a "query" attribute
+	// Intercept OPTIONS request
+	if (req.method == 'OPTIONS') {
+      res.sendStatus(200);
+	}
+
 	if (req.body.query === undefined){
+		// Usage: API calls must include a JSON object with a "query" attribute
 		data['error'] = 'Parameters missing.';
 		res.send(data);
-	} else {
+  } else {
 		if (req.body.query === 'TESTMODE'){
 			// This 'test mode' returns sample data for front-end development, saving API calls.
 			fileSystem.readFile('./testdata.json', function (ferr, fdata) {
