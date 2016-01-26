@@ -12,21 +12,10 @@
 'use strict';
 
 var express = require('express');
-var cors = require('cors');
 var bodyParser = require('body-parser');
 
-// cfenv provides access to IBM's Cloud Foundry environment
-// for more info, see: https://www.npmjs.com/package/cfenv
-var cfenv = require('cfenv');
-
-// create a new express server
 var app = express();
 app.use(bodyParser.json()); // Prepare to parse POST data
-//app.options('/', cors());
-//app.use(cors());
-
-// get the app environment from Cloud Foundry
-var appEnv = cfenv.getAppEnv();
 
 // get Watson credentials
 var fileSystem = require('fs');
@@ -52,7 +41,7 @@ app.post('/', function(req, res, next){
 	//res.set('Content-Type', 'text/plain');
 	var query = req.body.query;
 	var data = {}; // Return data will be in JSON format and stored here.
-	console.log('Request payload: ' + query.length);
+	console.log('Request payload: ' + query.length + ' bytes');
 
 	if (query === undefined){
 		// Usage: API calls must include a JSON object with a "query" attribute
@@ -84,6 +73,7 @@ app.post('/', function(req, res, next){
 });
 
 // start server on the specified port and binding host
-app.listen(appEnv.port, appEnv.bind, function() {
-  	console.log("server starting on " + appEnv.url);
+var srvPort = process.env.PORT || 6001
+app.listen(srvPort, function() {
+  	console.log("server listening on port " + srvPort);
 });
