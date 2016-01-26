@@ -24,9 +24,12 @@ var watson = require('watson-developer-cloud');
 var personality_insights = watson.personality_insights(watsonAuthInfo.credentials);
 
 app.all('/', function(req, res, next) {
+	// Set headers for CORS
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
 	console.log('Request received: ' + req.method);
+	// Handles the OPTIONS request
+	// (see https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests )
 	if (req.method == 'OPTIONS'){
 		res.sendStatus(200);
 	} else {
@@ -38,7 +41,6 @@ app.all('/', function(req, res, next) {
 // Serves the API functionality from the server root
 // =================================================
 app.post('/', function(req, res, next){
-	//res.set('Content-Type', 'text/plain');
 	var query = req.body.query;
 	var data = {}; // Return data will be in JSON format and stored here.
 	console.log('Request payload: ' + query.length + ' bytes');
@@ -73,7 +75,7 @@ app.post('/', function(req, res, next){
 });
 
 // start server on the specified port and binding host
-var srvPort = process.env.PORT || 6001
+var srvPort = process.env.PORT || 6001;
 app.listen(srvPort, function() {
   	console.log("server listening on port " + srvPort);
 });
