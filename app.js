@@ -11,19 +11,17 @@
 //------------------------------------------------------------------------------
 'use strict';
 
-// This application uses express as it's web server
-// for more info, see: http://expressjs.com
 var express = require('express');
-
-var cors = require('cors');
+var cors = require('cors'); // For cross-site access
 
 // cfenv provides access to IBM's Cloud Foundry environment
 // for more info, see: https://www.npmjs.com/package/cfenv
 var cfenv = require('cfenv');
 
-// create a new express server
+// create a new express server and set up CORS parameters
 var app = express();
 app.use(cors());
+app.options('*', cors());
 
 // get the app environment from Cloud Foundry
 var appEnv = cfenv.getAppEnv();
@@ -34,7 +32,7 @@ var watsonAuthInfo = JSON.parse(fileSystem.readFileSync('./watsoncredentials.jso
 var watson = require('watson-developer-cloud');
 var personality_insights = watson.personality_insights(watsonAuthInfo.credentials);
 
-// Prepare to parse submitted info
+// Prepare to parse POST data
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
@@ -76,6 +74,5 @@ app.post('/', function(req, res){
 
 // start server on the specified port and binding host
 app.listen(appEnv.port, appEnv.bind, function() {
-	// print a message when the server starts listening
   	console.log("server starting on " + appEnv.url);
 });
