@@ -20,8 +20,9 @@ var cfenv = require('cfenv');
 
 // create a new express server and set up CORS parameters
 var app = express();
-app.use(cors());
 app.options('*', cors());
+app.options('/', cors());
+app.use(cors());
 
 // get the app environment from Cloud Foundry
 var appEnv = cfenv.getAppEnv();
